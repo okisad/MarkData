@@ -25,11 +25,11 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    List<StackBundle> stackWordses = new ArrayList<>();
+    private List<StackBundle> stackWordsesBundles = new ArrayList<>();
 
-    ClickableController clickableController = new ClickableController(this);
+    private ClickableController clickableController = new ClickableController(this);
 
-    static String article;
+    public static String article;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,8 +89,8 @@ public class MainActivity extends AppCompatActivity
     }
 
 
-    public List<StackBundle> getStackWordses() {
-        return stackWordses;
+    public List<StackBundle> getStackWordsesBundles() {
+        return stackWordsesBundles;
     }
 
     public ClickableController getClickableController() {
@@ -103,6 +103,14 @@ public class MainActivity extends AppCompatActivity
 
     public static void setArticle(String article) {
         MainActivity.article = article;
+    }
+
+    public void setStackWordsesBundles(List<StackBundle> stackWordsesBundles) {
+        this.stackWordsesBundles = stackWordsesBundles;
+    }
+
+    public void setClickableController(ClickableController clickableController) {
+        this.clickableController = clickableController;
     }
 
     public static boolean isConnected(Context context){

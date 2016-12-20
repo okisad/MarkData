@@ -4,12 +4,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
-import android.text.Spannable;
-import android.text.Spanned;
 import android.text.method.LinkMovementMethod;
-import android.text.style.ClickableSpan;
-import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,20 +18,16 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
-import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
-import com.example.oktaysadoglu.markdata.controller.ArticleController;
+import com.example.oktaysadoglu.markdata.controller.ArticleControllerToMark;
+import com.example.oktaysadoglu.markdata.controller.ArticleControllerToSend;
 import com.example.oktaysadoglu.markdata.controller.ClickableController;
 import com.example.oktaysadoglu.markdata.activities.MainActivity;
 import com.example.oktaysadoglu.markdata.R;
 import com.example.oktaysadoglu.markdata.enums.WordType;
-import com.example.oktaysadoglu.markdata.models.StackBundle;
 import com.example.oktaysadoglu.markdata.spannable.UTF8;
-import com.example.oktaysadoglu.markdata.models.Word;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.util.List;
 
 /**
  * Created by oktaysadoglu on 14/12/2016.
@@ -44,27 +35,23 @@ import java.util.List;
 
 public class TextFragment extends Fragment {
 
-    View myView;
+    private View textFragmentView;
 
-    ClickableController clickableController;
+    private TextView mainTextView,noConTextView ;
 
-    AHBottomNavigation bottomNavigation;
+    private ScrollView scrollView;
 
-    TextView mainTextView,noConTextView ;
+    private Button refreshButton;
 
-    ScrollView scrollView;
+    private MainActivity mainActivity;
 
-    Button refreshButton;
-
-    StackBundle stackBundle;
+    private ArticleControllerToMark articleControllerToMark;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        MainActivity mainActivity = (MainActivity) getActivity();
-
-        clickableController = mainActivity.getClickableController();
+        setMainActivity((MainActivity)getActivity());
 
     }
 
@@ -72,26 +59,26 @@ public class TextFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-        myView = inflater.inflate(R.layout.fragment_text, container, false);
+        setTextFragmentView(inflater.inflate(R.layout.fragment_text, container, false));
 
         bindViews();
 
-        setBottomBar();
+        setArticleControllerToMark(new ArticleControllerToMark(getTextFragmentView(),getMainActivity(),getMainActivity().getClickableController()));
 
-        return myView;
+        getArticleControllerToMark().setBottomBar();
+
+        return getTextFragmentView();
     }
 
     private void bindViews(){
 
-        bottomNavigation = (AHBottomNavigation) myView.findViewById(R.id.bottom_navigation);
+        setMainTextView((TextView) textFragmentView.findViewById(R.id.my_text));
 
-        mainTextView = (TextView) myView.findViewById(R.id.my_text);
+        setScrollView((ScrollView) textFragmentView.findViewById(R.id.scrollView));
 
-        scrollView = (ScrollView) myView.findViewById(R.id.scrollView);
+        setNoConTextView((TextView) textFragmentView.findViewById(R.id.text_fragment_no_connection_text));
 
-        noConTextView = (TextView) myView.findViewById(R.id.text_fragment_no_connection_text);
-
-        refreshButton = (Button) myView.findViewById(R.id.text_fragment_no_connection_refresh_button);
+        setRefreshButton((Button) textFragmentView.findViewById(R.id.text_fragment_no_connection_refresh_button));
 
     }
 
@@ -101,7 +88,8 @@ public class TextFragment extends Fragment {
 
         fetchDataFromUrl();
 
-        markWordsBeforeWritten();
+        getArticleControllerToMark().paintWords();
+
     }
 
     @Override
@@ -110,9 +98,7 @@ public class TextFragment extends Fragment {
 
         ClickableController.resetSelectedWords();
 
-        bottomNavigation.setVisibility(View.GONE);
-
-        bottomNavigation.setCurrentItem(AHBottomNavigation.CURRENT_ITEM_NONE);
+        getArticleControllerToMark().goneBottomNavigation();
 
     }
 
@@ -123,21 +109,13 @@ public class TextFragment extends Fragment {
 
             if (MainActivity.isConnected(getContext())) {
 
-                noConTextView.setVisibility(View.GONE);
-
-                refreshButton.setVisibility(View.GONE);
-
-                scrollView.setVisibility(View.VISIBLE);
+                adjustScreenForInternet(true);
 
                 requestText();
 
             } else {
 
-                refreshButton.setVisibility(View.VISIBLE);
-
-                noConTextView.setVisibility(View.VISIBLE);
-
-                scrollView.setVisibility(View.GONE);
+                adjustScreenForInternet(false);
 
                 setRefreshButtonListener();
 
@@ -149,213 +127,20 @@ public class TextFragment extends Fragment {
 
     private void setRefreshButtonListener() {
 
-        scrollView.setVisibility(View.GONE);
+        getScrollView().setVisibility(View.GONE);
 
-        refreshButton.setVisibility(View.VISIBLE);
+        getRefreshButton().setVisibility(View.VISIBLE);
 
-        refreshButton.setOnClickListener(new View.OnClickListener() {
+        getRefreshButton().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 fetchDataFromUrl();
 
-                markWordsBeforeWritten();
+                getArticleControllerToMark().paintWords();
             }
         });
 
     }
-
-    private void setBottomBar() {
-
-// Create items
-        AHBottomNavigationItem item1 = new AHBottomNavigationItem("Kisi", R.drawable.ic_bottom);
-        AHBottomNavigationItem item2 = new AHBottomNavigationItem("Kurum", R.drawable.ic_bottom);
-        AHBottomNavigationItem item3 = new AHBottomNavigationItem("Yer", R.drawable.ic_bottom);
-        AHBottomNavigationItem item4 = new AHBottomNavigationItem("Tarih", R.drawable.ic_bottom);
-
-// Add items
-        bottomNavigation.addItem(item1);
-        bottomNavigation.addItem(item2);
-        bottomNavigation.addItem(item3);
-        bottomNavigation.addItem(item4);
-
-        bottomNavigation.setCurrentItem(AHBottomNavigation.CURRENT_ITEM_NONE);
-
-
-// Set background color
-        bottomNavigation.setDefaultBackgroundColor(Color.parseColor("#FEFEFE"));
-
-// Disable the translation inside the CoordinatorLayout
-        bottomNavigation.setBehaviorTranslationEnabled(false);
-
-// Change colors
-        /*bottomNavigation.setAccentColor(Color.parseColor("#F63D2B"));
-        bottomNavigation.setInactiveColor(Color.parseColor("#747474"));*/
-
-// Force to tint the drawable (useful for font with icon for example)
-        bottomNavigation.setForceTint(true);
-
-// Display color under navigation bar (API 21+)
-// Don't forget these lines in your style-v21
-// <item name="android:windowTranslucentNavigation">true</item>
-// <item name="android:fitsSystemWindows">true</item>
-        bottomNavigation.setTranslucentNavigationEnabled(true);
-
-// Manage titles
-        bottomNavigation.setTitleState(AHBottomNavigation.TitleState.ALWAYS_SHOW);
-
-        /*bottomNavigation.setColored(true);*/
-
-
-// Customize notification (title, background, typeface)
-        /*bottomNavigation.setNotificationBackgroundColor(Color.parseColor("#F63D2B"));*/
-
-
-// Set listeners
-        bottomNavigation.setOnTabSelectedListener(new AHBottomNavigation.OnTabSelectedListener() {
-            @Override
-            public boolean onTabSelected(int position, boolean wasSelected) {
-
-                if (position == 0) {
-
-                    markWords(WordType.PERSON);
-
-                    colorMarkedWord();
-
-                    bottomNavigation.setVisibility(View.GONE);
-
-                    bottomNavigation.setCurrentItem(AHBottomNavigation.CURRENT_ITEM_NONE);
-
-                    clickableController.setSelectedCount(0);
-
-                } else if (position == 1) {
-
-                    markWords(WordType.INSTITUTION);
-
-                    colorMarkedWord();
-
-                    bottomNavigation.setVisibility(View.GONE);
-
-                    bottomNavigation.setCurrentItem(AHBottomNavigation.CURRENT_ITEM_NONE);
-
-                    clickableController.setSelectedCount(0);
-
-                } else if (position == 2) {
-
-                    markWords(WordType.PLACE);
-
-                    colorMarkedWord();
-
-                    bottomNavigation.setVisibility(View.GONE);
-
-                    bottomNavigation.setCurrentItem(AHBottomNavigation.CURRENT_ITEM_NONE);
-
-                    clickableController.setSelectedCount(0);
-
-                } else if (position == 3) {
-
-                    markWords(WordType.DATE);
-
-                    colorMarkedWord();
-
-                    bottomNavigation.setVisibility(View.GONE);
-
-                    bottomNavigation.setCurrentItem(AHBottomNavigation.CURRENT_ITEM_NONE);
-
-                    clickableController.setSelectedCount(0);
-
-                }
-
-                // Do something cool here...
-                return true;
-            }
-        });
-        bottomNavigation.setOnNavigationPositionListener(new AHBottomNavigation.OnNavigationPositionListener() {
-            @Override
-            public void onPositionChange(int y) {
-                // Manage the new y position
-            }
-        });
-    }
-
-    private void markWords(WordType wordType) {
-
-        stackBundle = new StackBundle();
-
-        List<Word> words = ClickableController.words;
-
-        for (Word word : words) {
-
-            if (word.isSelected()) {
-
-                word.setMarked(true);
-
-                word.setSelected(false);
-
-                word.setWordType(wordType);
-
-                stackBundle.getStackWords().add(word);
-
-            }
-
-        }
-
-        MainActivity mainActivity = (MainActivity) getActivity();
-
-        mainActivity.getStackWordses().add(stackBundle);
-    }
-
-    private void colorMarkedWord() {
-
-        List<Word> words = ClickableController.words;
-
-        paintWords(words);
-
-
-    }
-
-    private void markWordsBeforeWritten() {
-
-        List<Word> words = ClickableController.words;
-
-        paintWords(words);
-
-    }
-
-    private void paintWords(List<Word> words) {
-
-        for (Word word : words) {
-
-            if (word.isMarked()) {
-
-                Spannable spannable = (Spannable) mainTextView.getText();
-
-                if (word.getWordType() == WordType.DATE) {
-
-                    spannable.setSpan(new ForegroundColorSpan(ContextCompat.getColor(getContext(), R.color.colorTarih)), word.getStartPlace(), word.getEndPlace(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-
-                } else if (word.getWordType() == WordType.PERSON) {
-
-                    spannable.setSpan(new ForegroundColorSpan(ContextCompat.getColor(getContext(), R.color.colorKisi)), word.getStartPlace(), word.getEndPlace(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-
-                } else if (word.getWordType() == WordType.INSTITUTION) {
-
-                    spannable.setSpan(new ForegroundColorSpan(ContextCompat.getColor(getContext(), R.color.colorKurum)), word.getStartPlace(), word.getEndPlace(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-
-                } else if (word.getWordType() == WordType.PLACE) {
-
-                    spannable.setSpan(new ForegroundColorSpan(ContextCompat.getColor(getContext(), R.color.colorYer)), word.getStartPlace(), word.getEndPlace(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-
-                }
-
-                mainTextView.setText(spannable);
-
-            }
-
-        }
-
-
-    }
-
 
     private void requestText() {
 
@@ -370,15 +155,15 @@ public class TextFragment extends Fragment {
 
                     UTF8.id = response.getInt("_id");
 
-                    mainTextView.setText(MainActivity.getArticle(), TextView.BufferType.SPANNABLE);
+                    getMainTextView().setText(MainActivity.getArticle(), TextView.BufferType.SPANNABLE);
 
-                    ArticleController.setText(MainActivity.getArticle());
+                    ArticleControllerToSend.setText(MainActivity.getArticle());
 
-                    clickableController.getEachWord(mainTextView);
+                    getMainActivity().getClickableController().getEachWord(getMainTextView());
 
-                    mainTextView.setHighlightColor(Color.TRANSPARENT);
+                    getMainTextView().setHighlightColor(Color.TRANSPARENT);
 
-                    mainTextView.setMovementMethod(LinkMovementMethod.getInstance());
+                    getMainTextView().setMovementMethod(LinkMovementMethod.getInstance());
 
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -387,7 +172,7 @@ public class TextFragment extends Fragment {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                mainTextView.setText("Sunucu dan kaynaklı hata");
+                getMainTextView().setText("Sunucu dan kaynaklı hata");
             }
         });
 
@@ -397,18 +182,93 @@ public class TextFragment extends Fragment {
 
     private void writeText() {
 
-        noConTextView.setVisibility(View.GONE);
+        adjustScreenForInternet(true);
 
-        refreshButton.setVisibility(View.GONE);
+        getMainTextView().setText(MainActivity.getArticle(), TextView.BufferType.SPANNABLE);
 
-        mainTextView.setText(MainActivity.getArticle(), TextView.BufferType.SPANNABLE);
+        getMainActivity().getClickableController().getEachWord(getMainTextView());
 
-        clickableController.getEachWord(mainTextView);
+        getMainTextView().setHighlightColor(Color.TRANSPARENT);
 
-        mainTextView.setHighlightColor(Color.TRANSPARENT);
-
-        mainTextView.setMovementMethod(LinkMovementMethod.getInstance());
+        getMainTextView().setMovementMethod(LinkMovementMethod.getInstance());
 
     }
 
+    private void adjustScreenForInternet(boolean isAvailableInternet){
+
+        if (isAvailableInternet){
+
+            getNoConTextView().setVisibility(View.GONE);
+
+            getRefreshButton().setVisibility(View.GONE);
+
+            getScrollView().setVisibility(View.VISIBLE);
+
+        }else {
+
+            getRefreshButton().setVisibility(View.VISIBLE);
+
+            getNoConTextView().setVisibility(View.VISIBLE);
+
+            getScrollView().setVisibility(View.GONE);
+
+        }
+
+    }
+
+    public View getTextFragmentView() {
+        return textFragmentView;
+    }
+
+    public void setTextFragmentView(View textFragmentView) {
+        this.textFragmentView = textFragmentView;
+    }
+
+    public TextView getMainTextView() {
+        return mainTextView;
+    }
+
+    public void setMainTextView(TextView mainTextView) {
+        this.mainTextView = mainTextView;
+    }
+
+    public TextView getNoConTextView() {
+        return noConTextView;
+    }
+
+    public void setNoConTextView(TextView noConTextView) {
+        this.noConTextView = noConTextView;
+    }
+
+    public ScrollView getScrollView() {
+        return scrollView;
+    }
+
+    public void setScrollView(ScrollView scrollView) {
+        this.scrollView = scrollView;
+    }
+
+    public Button getRefreshButton() {
+        return refreshButton;
+    }
+
+    public void setRefreshButton(Button refreshButton) {
+        this.refreshButton = refreshButton;
+    }
+
+    public MainActivity getMainActivity() {
+        return mainActivity;
+    }
+
+    public void setMainActivity(MainActivity mainActivity) {
+        this.mainActivity = mainActivity;
+    }
+
+    public ArticleControllerToMark getArticleControllerToMark() {
+        return articleControllerToMark;
+    }
+
+    public void setArticleControllerToMark(ArticleControllerToMark articleControllerToMark) {
+        this.articleControllerToMark = articleControllerToMark;
+    }
 }

@@ -14,7 +14,7 @@ import java.util.TreeMap;
  * Created by oktaysadoglu on 19/12/2016.
  */
 
-public class ArticleController {
+public class ArticleControllerToSend {
 
     public static String text;
 
@@ -158,7 +158,6 @@ public class ArticleController {
 
     }
 
-
     public static <K, V> void printMap(Map<K, V> map) {
         for (Map.Entry<K, V> entry : map.entrySet()) {
             Log.e("my", "Key : " + entry.getKey() + " Value : " + entry.getValue());
@@ -170,6 +169,6 @@ public class ArticleController {
     }
 
     public static void setText(String text) {
-        ArticleController.text = text;
+        ArticleControllerToSend.text = text;
     }
 }
