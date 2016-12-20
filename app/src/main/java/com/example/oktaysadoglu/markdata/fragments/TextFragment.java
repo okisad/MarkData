@@ -17,13 +17,11 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
-import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
 import com.example.oktaysadoglu.markdata.controller.ArticleControllerToMark;
 import com.example.oktaysadoglu.markdata.controller.ArticleControllerToSend;
 import com.example.oktaysadoglu.markdata.controller.ClickableController;
 import com.example.oktaysadoglu.markdata.activities.MainActivity;
 import com.example.oktaysadoglu.markdata.R;
-import com.example.oktaysadoglu.markdata.enums.WordType;
 import com.example.oktaysadoglu.markdata.spannable.UTF8;
 
 import org.json.JSONException;
@@ -146,14 +144,14 @@ public class TextFragment extends Fragment {
 
         RequestQueue requestQueue = Volley.newRequestQueue(this.getContext());
 
-        UTF8 utf8 = new UTF8(Request.Method.GET, "http://192.168.1.33:8081/getNewspaper", null, new Response.Listener<JSONObject>() {
+        UTF8 utf8 = new UTF8(Request.Method.GET, getString(R.string.get_url_for_unmarked_news), null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 try {
 
-                    MainActivity.setArticle(response.get("text").toString());
+                    MainActivity.setArticle(response.get(getString(R.string.text_parameter_to_get_unmarked_news)).toString());
 
-                    UTF8.id = response.getInt("_id");
+                    UTF8.id = response.getInt(getString(R.string.id_parameter_to_get_unmarked_news));
 
                     getMainTextView().setText(MainActivity.getArticle(), TextView.BufferType.SPANNABLE);
 
@@ -172,7 +170,7 @@ public class TextFragment extends Fragment {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                getMainTextView().setText("Sunucu dan kaynaklı hata");
+                getMainTextView().setText(getString(R.string.error_server));
             }
         });
 

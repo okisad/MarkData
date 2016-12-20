@@ -1,7 +1,5 @@
 package com.example.oktaysadoglu.markdata.controller;
 
-import android.content.Context;
-import android.graphics.Color;
 import android.support.v4.content.ContextCompat;
 import android.text.Spannable;
 import android.text.Spanned;
@@ -18,7 +16,6 @@ import com.example.oktaysadoglu.markdata.models.StackBundle;
 import com.example.oktaysadoglu.markdata.models.Word;
 
 import java.util.List;
-import java.util.Stack;
 
 /**
  * Created by oktaysadoglu on 20/12/2016.
@@ -46,10 +43,10 @@ public class ArticleControllerToMark {
 
     public void setBottomBar() {
 
-        AHBottomNavigationItem item1 = new AHBottomNavigationItem("Kisi", R.drawable.ic_bottom);
-        AHBottomNavigationItem item2 = new AHBottomNavigationItem("Kurum", R.drawable.ic_bottom);
-        AHBottomNavigationItem item3 = new AHBottomNavigationItem("Yer", R.drawable.ic_bottom);
-        AHBottomNavigationItem item4 = new AHBottomNavigationItem("Tarih", R.drawable.ic_bottom);
+        AHBottomNavigationItem item1 = new AHBottomNavigationItem(getMainActivity().getString(R.string.bottom_bar_person_tag), R.drawable.ic_bottom);
+        AHBottomNavigationItem item2 = new AHBottomNavigationItem(getMainActivity().getString(R.string.bottom_bar_institution_tag), R.drawable.ic_bottom);
+        AHBottomNavigationItem item3 = new AHBottomNavigationItem(getMainActivity().getString(R.string.bottom_bar_place_tag), R.drawable.ic_bottom);
+        AHBottomNavigationItem item4 = new AHBottomNavigationItem(getMainActivity().getString(R.string.bottom_bar_history_tag), R.drawable.ic_bottom);
 
         getBottomNavigation().addItem(item1);
         getBottomNavigation().addItem(item2);
@@ -58,7 +55,7 @@ public class ArticleControllerToMark {
 
         getBottomNavigation().setCurrentItem(AHBottomNavigation.CURRENT_ITEM_NONE);
 
-        getBottomNavigation().setDefaultBackgroundColor(Color.parseColor("#FEFEFE"));
+        getBottomNavigation().setDefaultBackgroundColor(ContextCompat.getColor(getMainActivity(),R.color.bottom_bar_background_color));
 
         getBottomNavigation().setBehaviorTranslationEnabled(false);
 
@@ -167,19 +164,19 @@ public class ArticleControllerToMark {
 
                 if (word.getWordType() == WordType.DATE) {
 
-                    spannable.setSpan(new ForegroundColorSpan(ContextCompat.getColor(getMainActivity(), R.color.colorTarih)), word.getStartPlace(), word.getEndPlace(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    spannable.setSpan(new ForegroundColorSpan(ContextCompat.getColor(getMainActivity(), R.color.color_history_mark)), word.getStartPlace(), word.getEndPlace(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 
                 } else if (word.getWordType() == WordType.PERSON) {
 
-                    spannable.setSpan(new ForegroundColorSpan(ContextCompat.getColor(getMainActivity(), R.color.colorKisi)), word.getStartPlace(), word.getEndPlace(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    spannable.setSpan(new ForegroundColorSpan(ContextCompat.getColor(getMainActivity(), R.color.color_person_mark)), word.getStartPlace(), word.getEndPlace(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 
                 } else if (word.getWordType() == WordType.INSTITUTION) {
 
-                    spannable.setSpan(new ForegroundColorSpan(ContextCompat.getColor(getMainActivity(), R.color.colorKurum)), word.getStartPlace(), word.getEndPlace(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    spannable.setSpan(new ForegroundColorSpan(ContextCompat.getColor(getMainActivity(), R.color.color_institution_mark)), word.getStartPlace(), word.getEndPlace(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 
                 } else if (word.getWordType() == WordType.PLACE) {
 
-                    spannable.setSpan(new ForegroundColorSpan(ContextCompat.getColor(getMainActivity(), R.color.colorYer)), word.getStartPlace(), word.getEndPlace(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    spannable.setSpan(new ForegroundColorSpan(ContextCompat.getColor(getMainActivity(), R.color.color_place_mark)), word.getStartPlace(), word.getEndPlace(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 
                 }
 

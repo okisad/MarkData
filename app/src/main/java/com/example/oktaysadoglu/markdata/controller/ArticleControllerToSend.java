@@ -120,16 +120,6 @@ public class ArticleControllerToSend {
         return text;
     }
 
-    private static Map<Integer, Integer> orderMap(Map<Integer, Integer> positionMap) {
-
-        Map<Integer, Integer> sortedMap = new TreeMap<>(positionMap);
-
-        printMap(sortedMap);
-
-        return sortedMap;
-
-    }
-
     private static int getCount(Word word,boolean analyzePunc) {
 
         int count = 0;
@@ -156,12 +146,6 @@ public class ArticleControllerToSend {
 
         return count;
 
-    }
-
-    public static <K, V> void printMap(Map<K, V> map) {
-        for (Map.Entry<K, V> entry : map.entrySet()) {
-            Log.e("my", "Key : " + entry.getKey() + " Value : " + entry.getValue());
-        }
     }
 
     public static String getText() {

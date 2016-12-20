@@ -35,39 +35,61 @@ import java.util.Map;
 
 public class StackFragment extends Fragment{
 
-    View myView;
-    Button sendButton;
+    private View stackFragmentView;
+    private Button sendButton;
     private RecyclerView recyclerView;
     private WordsAdapter mAdapter;
+    private MainActivity mainActivity;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-        myView = inflater.inflate(R.layout.fragment_stack,container,false);
+        setStackFragmentView(inflater.inflate(R.layout.fragment_stack,container,false));
 
-        sendButton = (Button) myView.findViewById(R.id.fragment_stack_send_button);
+        bindViews();
 
-        recyclerView = (RecyclerView) myView.findViewById(R.id.recycler_view);
+        setListItems();
 
-        final MainActivity mainActivity = (MainActivity) getActivity();
+        setSendButtonOnClickListener();
 
-        mAdapter = new WordsAdapter(mainActivity.getStackWordsesBundles());
+        return getStackFragmentView();
+
+    }
+
+    private void bindViews(){
+
+        setSendButton((Button) getStackFragmentView().findViewById(R.id.fragment_stack_send_button));
+
+        setRecyclerView((RecyclerView) getStackFragmentView().findViewById(R.id.recycler_view));
+
+        setMainActivity((MainActivity) getActivity());
+
+
+    }
+
+    private void setListItems(){
+
+        setmAdapter(new WordsAdapter(getMainActivity().getStackWordsesBundles()));
 
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
-        recyclerView.setLayoutManager(mLayoutManager);
-        recyclerView.setItemAnimator(new DefaultItemAnimator());
-        recyclerView.setAdapter(mAdapter);
+        getRecyclerView().setLayoutManager(mLayoutManager);
+        getRecyclerView().setItemAnimator(new DefaultItemAnimator());
+        getRecyclerView().setAdapter(getmAdapter());
 
-        sendButton.setOnClickListener(new View.OnClickListener() {
+    }
+
+    private void setSendButtonOnClickListener(){
+
+        getSendButton().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                final String text = ArticleControllerToSend.markTextWithTag(mainActivity.getStackWordsesBundles());
+                final String text = ArticleControllerToSend.markTextWithTag(getMainActivity().getStackWordsesBundles());
 
                 RequestQueue requestQueue = Volley.newRequestQueue(getContext());
 
-                StringRequest stringRequest = new StringRequest(Request.Method.POST, "http://192.168.1.33:8081/addMarkedNews", new Response.Listener<String>() {
+                StringRequest stringRequest = new StringRequest(Request.Method.POST, getString(R.string.send_url_for_marked_news), new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
 
@@ -81,8 +103,8 @@ public class StackFragment extends Fragment{
                     @Override
                     protected Map<String, String> getParams() throws AuthFailureError {
                         Map<String,String> params = new HashMap<String, String>();
-                        params.put("id", String.valueOf(UTF8.id));
-                        params.put("text",text);
+                        params.put(getString(R.string.id_parameter_to_send_marked_news), String.valueOf(UTF8.id));
+                        params.put(getString(R.string.text_parameter_to_send_marked_news),text);
                         return params;
                     }
                 };
@@ -93,7 +115,45 @@ public class StackFragment extends Fragment{
             }
         });
 
-        return myView;
+    }
 
+    public View getStackFragmentView() {
+        return stackFragmentView;
+    }
+
+    public void setStackFragmentView(View stackFragmentView) {
+        this.stackFragmentView = stackFragmentView;
+    }
+
+    public Button getSendButton() {
+        return sendButton;
+    }
+
+    public void setSendButton(Button sendButton) {
+        this.sendButton = sendButton;
+    }
+
+    public RecyclerView getRecyclerView() {
+        return recyclerView;
+    }
+
+    public void setRecyclerView(RecyclerView recyclerView) {
+        this.recyclerView = recyclerView;
+    }
+
+    public WordsAdapter getmAdapter() {
+        return mAdapter;
+    }
+
+    public void setmAdapter(WordsAdapter mAdapter) {
+        this.mAdapter = mAdapter;
+    }
+
+    public MainActivity getMainActivity() {
+        return mainActivity;
+    }
+
+    public void setMainActivity(MainActivity mainActivity) {
+        this.mainActivity = mainActivity;
     }
 }
