@@ -2,8 +2,8 @@
     <string name="app_name">MarkData</string>
 
     <!-- Configurations -->
-    <string name="send_url_for_marked_news">http://192.168.0.16:8081/addMarkedNews</string>
-    <string name="get_url_for_unmarked_news">http://192.168.0.16:8081/getNewspaper</string>
+    <string name="send_url_for_marked_news">http://192.168.1.5:8081/addMarkedNews</string>
+    <string name="get_url_for_unmarked_news">http://192.168.1.5:8081/getNewspaper</string>
 
     <!-- Send Parameters -->
     <string name="id_parameter_to_send_marked_news">id</string>
