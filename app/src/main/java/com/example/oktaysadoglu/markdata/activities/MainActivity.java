@@ -15,6 +15,7 @@ import android.view.MenuItem;
 
 import com.example.oktaysadoglu.markdata.R;
 import com.example.oktaysadoglu.markdata.controller.ClickableController;
+import com.example.oktaysadoglu.markdata.fragments.SettingsFragment;
 import com.example.oktaysadoglu.markdata.models.StackBundle;
 import com.example.oktaysadoglu.markdata.fragments.StackFragment;
 import com.example.oktaysadoglu.markdata.fragments.TextFragment;
@@ -30,6 +31,8 @@ public class MainActivity extends AppCompatActivity
     private ClickableController clickableController = new ClickableController(this);
 
     public static String article;
+
+    public static int news_text_size = 20;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,6 +68,10 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_stack) {
 
             fragmentManager.beginTransaction().replace(R.id.content_frame,new StackFragment()).commit();
+
+        } else if (id == R.id.nav_settings) {
+
+            fragmentManager.beginTransaction().replace(R.id.content_frame,new SettingsFragment()).commit();
 
         }
 

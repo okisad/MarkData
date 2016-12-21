@@ -72,6 +72,8 @@ public class TextFragment extends Fragment {
 
         setMainTextView((TextView) textFragmentView.findViewById(R.id.my_text));
 
+        getMainTextView().setTextSize(MainActivity.news_text_size);
+
         setScrollView((ScrollView) textFragmentView.findViewById(R.id.scrollView));
 
         setNoConTextView((TextView) textFragmentView.findViewById(R.id.text_fragment_no_connection_text));

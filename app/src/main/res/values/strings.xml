@@ -2,8 +2,8 @@
     <string name="app_name">MarkData</string>
 
     <!-- Configurations -->
-    <string name="send_url_for_marked_news">http://192.168.1.5:8081/addMarkedNews</string>
-    <string name="get_url_for_unmarked_news">http://192.168.1.5:8081/getNewspaper</string>
+    <string name="send_url_for_marked_news">http://172.20.10.3:8081/addMarkedNews</string>
+    <string name="get_url_for_unmarked_news">http://172.20.10.3:8081/getNewspaper</string>
 
     <!-- Send Parameters -->
     <string name="id_parameter_to_send_marked_news">id</string>
@@ -12,6 +12,12 @@
     <!-- Get Parameters -->
     <string name="id_parameter_to_get_unmarked_news">_id</string>
     <string name="text_parameter_to_get_unmarked_news">text</string>
+
+
+    <!-- Settings Fragment -->
+    <string name="settings_fragment_text_size_text">Yazı Boyutu</string>
+    <string name="settings_fragment_text_size_change_button_text">Değiştir</string>
+    <string name="settings_fragment_dialog_title">Yazı Boyutu</string>
 
 
     <string name="error_server">Sunucudan Kaynaklı Hata</string>
