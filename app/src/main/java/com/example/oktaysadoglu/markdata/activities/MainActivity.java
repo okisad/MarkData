@@ -30,10 +30,6 @@ public class MainActivity extends AppCompatActivity
 
     private ClickableController clickableController = new ClickableController(this);
 
-    public static String article;
-
-    public static int news_text_size = 20;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -102,14 +98,6 @@ public class MainActivity extends AppCompatActivity
 
     public ClickableController getClickableController() {
         return clickableController;
-    }
-
-    public static String getArticle() {
-        return article;
-    }
-
-    public static void setArticle(String article) {
-        MainActivity.article = article;
     }
 
     public void setStackWordsesBundles(List<StackBundle> stackWordsesBundles) {

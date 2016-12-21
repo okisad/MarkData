@@ -22,6 +22,8 @@ import com.example.oktaysadoglu.markdata.controller.ArticleControllerToSend;
 import com.example.oktaysadoglu.markdata.controller.ClickableController;
 import com.example.oktaysadoglu.markdata.activities.MainActivity;
 import com.example.oktaysadoglu.markdata.R;
+import com.example.oktaysadoglu.markdata.preferences.ArticlePreferences;
+import com.example.oktaysadoglu.markdata.preferences.TextSizePreferences;
 import com.example.oktaysadoglu.markdata.spannable.UTF8;
 
 import org.json.JSONException;
@@ -72,7 +74,7 @@ public class TextFragment extends Fragment {
 
         setMainTextView((TextView) textFragmentView.findViewById(R.id.my_text));
 
-        getMainTextView().setTextSize(MainActivity.news_text_size);
+        getMainTextView().setTextSize(TextSizePreferences.getTextSize(getContext()));
 
         setScrollView((ScrollView) textFragmentView.findViewById(R.id.scrollView));
 
@@ -105,7 +107,7 @@ public class TextFragment extends Fragment {
     private void fetchDataFromUrl() {
 
 
-        if (MainActivity.getArticle() == null)
+        if (ArticlePreferences.getArticle(getContext()).equals("")) {
 
             if (MainActivity.isConnected(getContext())) {
 
@@ -120,8 +122,9 @@ public class TextFragment extends Fragment {
                 setRefreshButtonListener();
 
             }
-        else
+        }else {
             writeText();
+        }
 
     }
 
@@ -151,13 +154,13 @@ public class TextFragment extends Fragment {
             public void onResponse(JSONObject response) {
                 try {
 
-                    MainActivity.setArticle(response.get(getString(R.string.text_parameter_to_get_unmarked_news)).toString());
+                    ArticlePreferences.setArticle(getContext(),response.get(getString(R.string.text_parameter_to_get_unmarked_news)).toString());
 
                     UTF8.id = response.getInt(getString(R.string.id_parameter_to_get_unmarked_news));
 
-                    getMainTextView().setText(MainActivity.getArticle(), TextView.BufferType.SPANNABLE);
+                    getMainTextView().setText(ArticlePreferences.getArticle(getContext()), TextView.BufferType.SPANNABLE);
 
-                    ArticleControllerToSend.setText(MainActivity.getArticle());
+                    ArticleControllerToSend.setText(ArticlePreferences.getArticle(getContext()));
 
                     getMainActivity().getClickableController().getEachWord(getMainTextView());
 
@@ -184,7 +187,7 @@ public class TextFragment extends Fragment {
 
         adjustScreenForInternet(true);
 
-        getMainTextView().setText(MainActivity.getArticle(), TextView.BufferType.SPANNABLE);
+        getMainTextView().setText(ArticlePreferences.getArticle(getContext()), TextView.BufferType.SPANNABLE);
 
         getMainActivity().getClickableController().getEachWord(getMainTextView());
 

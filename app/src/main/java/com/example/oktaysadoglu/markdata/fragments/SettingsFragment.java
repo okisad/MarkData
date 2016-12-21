@@ -12,6 +12,7 @@ import android.widget.NumberPicker;
 
 import com.example.oktaysadoglu.markdata.R;
 import com.example.oktaysadoglu.markdata.activities.MainActivity;
+import com.example.oktaysadoglu.markdata.preferences.TextSizePreferences;
 
 /**
  * Created by oktaysadoglu on 21/12/2016.
@@ -87,7 +88,7 @@ public class SettingsFragment extends Fragment {
 
         getNumberPicker().setMaxValue(36);
         getNumberPicker().setMinValue(16);
-        getNumberPicker().setValue(MainActivity.news_text_size);
+        getNumberPicker().setValue(TextSizePreferences.getTextSize(getContext()));
 
     }
 
@@ -96,7 +97,7 @@ public class SettingsFragment extends Fragment {
         getDialogOkayButton().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                MainActivity.news_text_size = getNumberPicker().getValue();
+                TextSizePreferences.setTextSize(getContext(),getNumberPicker().getValue());
                 dialog.dismiss();
             }
         });
