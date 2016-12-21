@@ -1,13 +1,28 @@
 <resources>
     <string name="app_name">MarkData</string>
 
+    <!-- Configurations -->
+    <string name="send_url_for_marked_news">http://192.168.1.5:8081/addMarkedNews</string>
+    <string name="get_url_for_unmarked_news">http://192.168.1.5:8081/getNewspaper</string>
+
+    <!-- Send Parameters -->
+    <string name="id_parameter_to_send_marked_news">id</string>
+    <string name="text_parameter_to_send_marked_news">text</string>
+
+    <!-- Get Parameters -->
+    <string name="id_parameter_to_get_unmarked_news">_id</string>
+    <string name="text_parameter_to_get_unmarked_news">text</string>
+
+
+    <string name="error_server">Sunucudan Kaynaklı Hata</string>
+
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
     <string name="action_settings">Settings</string>
 
-    <string name="bottom_kisi">Kisi</string>
-    <string name="bottom_kurum">Kurum</string>
-    <string name="bottom_yer">Yer</string>
-    <string name="bottom_tarih">Tarih</string>
+    <string name="bottom_bar_person_tag">Kisi</string>
+    <string name="bottom_bar_institution_tag">Kurum</string>
+    <string name="bottom_bar_place_tag">Yer</string>
+    <string name="bottom_bar_history_tag">Tarih</string>
 </resources>

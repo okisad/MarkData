@@ -4,8 +4,11 @@
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
 
-    <color name="colorYer">@android:color/holo_blue_light</color>
-    <color name="colorKisi">@android:color/holo_red_light</color>
-    <color name="colorTarih">@android:color/holo_orange_light</color>
-    <color name="colorKurum">@android:color/holo_green_light</color>
+    <color name="color_place_mark">@android:color/holo_blue_light</color>
+    <color name="color_person_mark">@android:color/holo_red_light</color>
+    <color name="color_history_mark">@android:color/holo_orange_light</color>
+    <color name="color_institution_mark">@android:color/holo_green_light</color>
+
+
+    <color name="bottom_bar_background_color">#FEFEFE</color>
 </resources>

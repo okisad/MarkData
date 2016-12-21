@@ -14,7 +14,7 @@ import java.util.TreeMap;
  * Created by oktaysadoglu on 19/12/2016.
  */
 
-public class ArticleController {
+public class ArticleControllerToSend {
 
     public static String text;
 
@@ -120,16 +120,6 @@ public class ArticleController {
         return text;
     }
 
-    private static Map<Integer, Integer> orderMap(Map<Integer, Integer> positionMap) {
-
-        Map<Integer, Integer> sortedMap = new TreeMap<>(positionMap);
-
-        printMap(sortedMap);
-
-        return sortedMap;
-
-    }
-
     private static int getCount(Word word,boolean analyzePunc) {
 
         int count = 0;
@@ -158,18 +148,11 @@ public class ArticleController {
 
     }
 
-
-    public static <K, V> void printMap(Map<K, V> map) {
-        for (Map.Entry<K, V> entry : map.entrySet()) {
-            Log.e("my", "Key : " + entry.getKey() + " Value : " + entry.getValue());
-        }
-    }
-
     public static String getText() {
         return text;
     }
 
     public static void setText(String text) {
-        ArticleController.text = text;
+        ArticleControllerToSend.text = text;
     }
 }

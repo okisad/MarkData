@@ -26,8 +26,6 @@ import java.util.regex.Pattern;
 
 public class ClickableController {
 
-    boolean selected = false;
-
     private int selectedCount = 0;
 
     public static List<Word> words = new ArrayList<>();
@@ -36,7 +34,7 @@ public class ClickableController {
 
     public ClickableController(Activity activity) {
 
-        this.activity = activity;
+        setActivity(activity);
 
     }
 
@@ -201,5 +199,21 @@ public class ClickableController {
 
         }
 
+    }
+
+    public Activity getActivity() {
+        return activity;
+    }
+
+    public void setActivity(Activity activity) {
+        this.activity = activity;
+    }
+
+    public static List<Word> getWords() {
+        return words;
+    }
+
+    public static void setWords(List<Word> words) {
+        ClickableController.words = words;
     }
 }
