@@ -14,6 +14,7 @@ import com.example.oktaysadoglu.markdata.activities.MainActivity;
 import com.example.oktaysadoglu.markdata.enums.WordType;
 import com.example.oktaysadoglu.markdata.models.StackBundle;
 import com.example.oktaysadoglu.markdata.models.Word;
+import com.example.oktaysadoglu.markdata.preferences.ControlingWordsPreferences;
 
 import java.util.List;
 
@@ -154,33 +155,38 @@ public class ArticleControllerToMark {
         return stackBundle;
 
     }
+
     public void paintWords(){
 
-        for (Word word : ClickableController.words) {
+        for (StackBundle wordStack : getMainActivity().getStackWordsesBundles()) {
 
-            if (word.isMarked()) {
+            for (Word word:wordStack.getStackWords()){
 
-                Spannable spannable = (Spannable) getMainTextView().getText();
+                if (word.isMarked()) {
 
-                if (word.getWordType() == WordType.DATE) {
+                    Spannable spannable = (Spannable) getMainTextView().getText();
 
-                    spannable.setSpan(new ForegroundColorSpan(ContextCompat.getColor(getMainActivity(), R.color.color_history_mark)), word.getStartPlace(), word.getEndPlace(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    if (word.getWordType() == WordType.DATE) {
 
-                } else if (word.getWordType() == WordType.PERSON) {
+                        spannable.setSpan(new ForegroundColorSpan(ContextCompat.getColor(getMainActivity(), R.color.color_history_mark)), word.getStartPlace(), word.getEndPlace(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 
-                    spannable.setSpan(new ForegroundColorSpan(ContextCompat.getColor(getMainActivity(), R.color.color_person_mark)), word.getStartPlace(), word.getEndPlace(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    } else if (word.getWordType() == WordType.PERSON) {
 
-                } else if (word.getWordType() == WordType.INSTITUTION) {
+                        spannable.setSpan(new ForegroundColorSpan(ContextCompat.getColor(getMainActivity(), R.color.color_person_mark)), word.getStartPlace(), word.getEndPlace(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 
-                    spannable.setSpan(new ForegroundColorSpan(ContextCompat.getColor(getMainActivity(), R.color.color_institution_mark)), word.getStartPlace(), word.getEndPlace(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    } else if (word.getWordType() == WordType.INSTITUTION) {
 
-                } else if (word.getWordType() == WordType.PLACE) {
+                        spannable.setSpan(new ForegroundColorSpan(ContextCompat.getColor(getMainActivity(), R.color.color_institution_mark)), word.getStartPlace(), word.getEndPlace(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 
-                    spannable.setSpan(new ForegroundColorSpan(ContextCompat.getColor(getMainActivity(), R.color.color_place_mark)), word.getStartPlace(), word.getEndPlace(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    } else if (word.getWordType() == WordType.PLACE) {
+
+                        spannable.setSpan(new ForegroundColorSpan(ContextCompat.getColor(getMainActivity(), R.color.color_place_mark)), word.getStartPlace(), word.getEndPlace(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+                    }
+
+                    getMainTextView().setText(spannable);
 
                 }
-
-                getMainTextView().setText(spannable);
 
             }
 

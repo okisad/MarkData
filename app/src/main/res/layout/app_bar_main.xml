@@ -19,7 +19,6 @@
             android:background="?attr/colorPrimary"
             app:popupTheme="@style/AppTheme.PopupOverlay"
             />
-
     </android.support.design.widget.AppBarLayout>
     <RelativeLayout android:id="@+id/content_main"
         android:layout_width="match_parent"

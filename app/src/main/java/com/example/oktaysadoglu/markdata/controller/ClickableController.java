@@ -1,6 +1,7 @@
 package com.example.oktaysadoglu.markdata.controller;
 
 import android.app.Activity;
+import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.text.Spannable;
@@ -14,6 +15,7 @@ import android.widget.TextView;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
 import com.example.oktaysadoglu.markdata.R;
 import com.example.oktaysadoglu.markdata.models.Word;
+import com.example.oktaysadoglu.markdata.preferences.ControlingWordsPreferences;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -170,7 +172,7 @@ public class ClickableController {
         this.selectedCount = selectedCount;
     }
 
-    public static void resetMarkedAndSelectedWords(List<Word> stackedWords){
+    public static void resetMarkedAndSelectedWords(List<Word> stackedWords, Context context){
 
         for (Word word :words){
 
@@ -188,16 +190,20 @@ public class ClickableController {
 
         }
 
+        ControlingWordsPreferences.setWords(context,words);
+
 
     }
 
-    public static void resetSelectedWords(){
+    public static void resetSelectedWords(Context context){
 
         for (Word word :words){
 
             word.setSelected(false);
 
         }
+
+        ControlingWordsPreferences.setWords(context,words);
 
     }
 
@@ -216,4 +222,6 @@ public class ClickableController {
     public static void setWords(List<Word> words) {
         ClickableController.words = words;
     }
+
+
 }

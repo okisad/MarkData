@@ -24,6 +24,7 @@ import com.example.oktaysadoglu.markdata.activities.MainActivity;
 import com.example.oktaysadoglu.markdata.R;
 import com.example.oktaysadoglu.markdata.adapter.WordsAdapter;
 import com.example.oktaysadoglu.markdata.controller.ArticleControllerToSend;
+import com.example.oktaysadoglu.markdata.preferences.ArticlePreferences;
 import com.example.oktaysadoglu.markdata.spannable.UTF8;
 
 import java.util.HashMap;
@@ -70,7 +71,7 @@ public class StackFragment extends Fragment{
 
     private void setListItems(){
 
-        setmAdapter(new WordsAdapter(getMainActivity().getStackWordsesBundles()));
+        setmAdapter(new WordsAdapter(getMainActivity().getStackWordsesBundles(),getContext()));
 
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
         getRecyclerView().setLayoutManager(mLayoutManager);
@@ -85,7 +86,7 @@ public class StackFragment extends Fragment{
             @Override
             public void onClick(View view) {
 
-                final String text = ArticleControllerToSend.markTextWithTag(getMainActivity().getStackWordsesBundles());
+                final String text = ArticleControllerToSend.markTextWithTag(getMainActivity().getStackWordsesBundles(), ArticlePreferences.getArticle(getContext()));
 
                 RequestQueue requestQueue = Volley.newRequestQueue(getContext());
 

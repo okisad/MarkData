@@ -1,5 +1,6 @@
 package com.example.oktaysadoglu.markdata.adapter;
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,6 +12,7 @@ import com.example.oktaysadoglu.markdata.R;
 import com.example.oktaysadoglu.markdata.controller.ClickableController;
 import com.example.oktaysadoglu.markdata.models.StackBundle;
 import com.example.oktaysadoglu.markdata.models.Word;
+import com.example.oktaysadoglu.markdata.preferences.ControlingWordsPreferences;
 
 import java.util.Collections;
 import java.util.Comparator;
@@ -24,11 +26,14 @@ public class WordsAdapter extends RecyclerView.Adapter<WordsAdapter.MyViewHolder
 
     List<StackBundle> stackWordses;
 
+    Context context;
+
     public WordsAdapter() {
     }
 
-    public WordsAdapter(List<StackBundle> stackWordses) {
+    public WordsAdapter(List<StackBundle> stackWordses, Context context) {
         this.stackWordses = stackWordses;
+        this.context = context;
     }
 
     public List<StackBundle> getStackWordses() {
@@ -53,7 +58,7 @@ public class WordsAdapter extends RecyclerView.Adapter<WordsAdapter.MyViewHolder
                 @Override
                 public void onClick(View view) {
 
-                    ClickableController.resetMarkedAndSelectedWords(stackWordses.get(getAdapterPosition()).getStackWords());
+                    ClickableController.resetMarkedAndSelectedWords(stackWordses.get(getAdapterPosition()).getStackWords(),context);
 
                     stackWordses.remove(getAdapterPosition());
 

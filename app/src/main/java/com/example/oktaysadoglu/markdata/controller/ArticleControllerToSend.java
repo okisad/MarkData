@@ -20,11 +20,11 @@ public class ArticleControllerToSend {
 
     public static Map<Integer, Integer> positionMap = new HashMap<>();
 
-    public static String markTextWithTag(List<StackBundle> stackBundles) {
+    public static String markTextWithTag(List<StackBundle> stackBundles,String text) {
 
         StringBuilder stringBuilder = new StringBuilder(text);
 
-        String text = "";
+        String markedText = "";
 
         positionMap.clear();
 
@@ -48,13 +48,13 @@ public class ArticleControllerToSend {
 
                         if (word.getStartPlace() - previousWord.getEndPlace() < 2) {
 
-                            text = stringBuilder.insert(word.getEndPlace() + getCount(word,true), endingTag).toString();
+                            markedText = stringBuilder.insert(word.getEndPlace() + getCount(word,true), endingTag).toString();
 
                             positionMap.put(word.getEndPlace(), endingTag.length());
 
                         } else {
 
-                            text = stringBuilder.insert(previousWord.getEndPlace() + getCount(previousWord,true), endingTag).toString();
+                            markedText = stringBuilder.insert(previousWord.getEndPlace() + getCount(previousWord,true), endingTag).toString();
 
                             positionMap.put(previousWord.getEndPlace(), endingTag.length());
 
@@ -64,7 +64,7 @@ public class ArticleControllerToSend {
 
                                 positionMap.put(word.getStartPlace(), startingTag.length());
 
-                                text = stringBuilder.insert(word.getEndPlace() + getCount(word,true), endingTag).toString();
+                                markedText = stringBuilder.insert(word.getEndPlace() + getCount(word,true), endingTag).toString();
 
                                 positionMap.put(word.getEndPlace(), endingTag.length());
 
@@ -90,7 +90,7 @@ public class ArticleControllerToSend {
 
                             positionMap.put(previousWord.getEndPlace(), endingTag.length());
 
-                            text = stringBuilder.insert(word.getStartPlace()+getCount(word,false),startingTag).toString();
+                            markedText = stringBuilder.insert(word.getStartPlace()+getCount(word,false),startingTag).toString();
 
                             positionMap.put(word.getStartPlace(),startingTag.length());
 
@@ -101,7 +101,7 @@ public class ArticleControllerToSend {
 
                 } else {
 
-                    text = stringBuilder.insert(word.getStartPlace() + getCount(word,false), startingTag).toString();
+                    markedText = stringBuilder.insert(word.getStartPlace() + getCount(word,false), startingTag).toString();
 
                     positionMap.put(word.getStartPlace(), startingTag.length());
 
@@ -115,9 +115,9 @@ public class ArticleControllerToSend {
 
         }
 
-        Log.e("my", text);
+        Log.e("my", markedText);
 
-        return text;
+        return markedText;
     }
 
     private static int getCount(Word word,boolean analyzePunc) {

@@ -4,13 +4,16 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.text.Spannable;
 import android.text.method.LinkMovementMethod;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -22,12 +25,17 @@ import com.example.oktaysadoglu.markdata.controller.ArticleControllerToSend;
 import com.example.oktaysadoglu.markdata.controller.ClickableController;
 import com.example.oktaysadoglu.markdata.activities.MainActivity;
 import com.example.oktaysadoglu.markdata.R;
+import com.example.oktaysadoglu.markdata.models.StackBundle;
+import com.example.oktaysadoglu.markdata.models.Word;
 import com.example.oktaysadoglu.markdata.preferences.ArticlePreferences;
+import com.example.oktaysadoglu.markdata.preferences.ControlingWordsPreferences;
 import com.example.oktaysadoglu.markdata.preferences.TextSizePreferences;
 import com.example.oktaysadoglu.markdata.spannable.UTF8;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.ArrayList;
 
 /**
  * Created by oktaysadoglu on 14/12/2016.
@@ -88,9 +96,11 @@ public class TextFragment extends Fragment {
     public void onStart() {
         super.onStart();
 
-        fetchDataFromUrl();
+        ClickableController.resetSelectedWords(getContext());
 
-        getArticleControllerToMark().paintWords();
+        getMainActivity().getClickableController().setSelectedCount(0);
+
+        fetchDataFromUrl();
 
     }
 
@@ -98,7 +108,11 @@ public class TextFragment extends Fragment {
     public void onPause() {
         super.onPause();
 
-        ClickableController.resetSelectedWords();
+        ControlingWordsPreferences.setWords(getContext(),ClickableController.words);
+
+        ClickableController.resetSelectedWords(getContext());
+
+        getMainActivity().getClickableController().setSelectedCount(0);
 
         getArticleControllerToMark().goneBottomNavigation();
 
@@ -156,6 +170,12 @@ public class TextFragment extends Fragment {
 
                     ArticlePreferences.setArticle(getContext(),response.get(getString(R.string.text_parameter_to_get_unmarked_news)).toString());
 
+                    ControlingWordsPreferences.setWords(getContext(),null);
+
+                    ClickableController.words = new ArrayList<>();
+
+                    getMainActivity().setStackWordsesBundles(new ArrayList<StackBundle>());
+
                     UTF8.id = response.getInt(getString(R.string.id_parameter_to_get_unmarked_news));
 
                     getMainTextView().setText(ArticlePreferences.getArticle(getContext()), TextView.BufferType.SPANNABLE);
@@ -175,7 +195,9 @@ public class TextFragment extends Fragment {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                getMainTextView().setText(getString(R.string.error_server));
+                Toast.makeText(getContext(),"Yeni yazı kalmadı",Toast.LENGTH_SHORT).show();
+
+
             }
         });
 
@@ -194,6 +216,16 @@ public class TextFragment extends Fragment {
         getMainTextView().setHighlightColor(Color.TRANSPARENT);
 
         getMainTextView().setMovementMethod(LinkMovementMethod.getInstance());
+
+        ClickableController.words = ControlingWordsPreferences.getWords(getMainActivity());
+
+        getArticleControllerToMark().paintWords();
+
+    }
+
+    public void getNewNews(){
+
+        requestText();
 
     }
 
